@@ -10,7 +10,7 @@
      def _ready(self):
          self.filament_feed_objects = self.printer.lookup_objects('filament_feed')
          self._fm175xx_reader = self.printer.lookup_object('fm175xx_reader')
-@@ -173,6 +176,59 @@
+@@ -173,6 +176,61 @@
  
          return error, info
  
@@ -24,7 +24,8 @@
 +                raise web_request.error("channel[%d] is out of range[0, %d]"
 +                                        % (channel, self._channel_nums - 1))
 +
-+            params = web_request.get_dict('info')
++            params = web_request.get_dict('info', {})
++            has_params = len(params) > 0
 +            filament_info = copy.deepcopy(filament_protocol.FILAMENT_INFO_STRUCT)
 +
 +            if 'vendor' in params:
@@ -52,16 +53,17 @@
 +            if 'card_uid' in params:
 +                filament_info['CARD_UID'] = list(bytes.fromhex(str(params.pop('card_uid'))))
 +            if 'sku' in params:
-+                filament_info['sku'] = int(params.pop('sku'))
-+            elif len(params) > 0:
-+                filament_info['sku'] = rand()
++                filament_info['SKU'] = int(params.pop('sku'))
 +
 +            if params:
 +                raise web_request.error("unsupported fields: %s" % (', '.join(sorted(params.keys()))))
 +
-+            info['OFFICIAL'] = len(params) > 0
++            filament_info['OFFICIAL'] = has_params
 +            self._state[channel] = FILAMENT_DT_STATE_IDLE
-+            self._filament_info_update(channel, filament_info, True)
++
++            ptc = self.printer.lookup_object('print_task_config', None)
++            if has_params or ptc is not None and ptc.print_task_config['filament_official'][channel]:
++                self._filament_info_update(channel, filament_info, True)
 +            web_request.send({'state': 'success'})
 +        except Exception as e:
 +            logging.error("[filament_detect] set: %s", str(e))
