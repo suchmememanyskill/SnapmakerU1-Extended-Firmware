@@ -23,8 +23,10 @@ start() {
             /oem/printer_data/config/extended/filament-detect/success_exporter.cfg
     fi
 
-    cat /oem/printer_data/config/extended/filament-detect/*.cfg > /tmp/u1.cfg
+    # Ensure a newline exists at the end of each config file to prevent concatenation issues
+    for f in /oem/printer_data/config/extended/filament-detect/*.cfg; do cat "$f"; echo; done > /tmp/u1.cfg
 
+    echo >> /tmp/u1.cfg
     echo "[snapmaker_tag_processor]" >> /tmp/u1.cfg
     echo "key = $SNAPMAKER_KEY" >> /tmp/u1.cfg
 

@@ -4,7 +4,7 @@ settings:
     items:
       system:
         label: Filament Tag Detection System
-        description: Extended system adds support for Bambu/Creality/Anycubic/Elegoo tagged spools.
+        description: Extended system adds support for extra tag types, like Bambu/Creality/Anycubic/Elegoo tagged spools.
         get_cmd:
           - bash
           - -c
@@ -49,7 +49,7 @@ settings:
               - |
                 rm -vf /oem/printer_data/config/extended/filament-detect/success_exporter.cfg
                 ln -sf /usr/local/share/firmware-config/tweaks/filament-detect/success_exporter_generic.cfg /oem/printer_data/config/extended/filament-detect/success_exporter_generic.cfg
-                /etc/init.d/S59filament-detect restart
+                /etc/init.d/S99filament-detect restart
           "false":
             label: Disabled
             cmd:
@@ -58,5 +58,5 @@ settings:
               - |
                 rm -vf /oem/printer_data/config/extended/filament-detect/success_exporter_generic.cfg
                 ln -sf /usr/local/share/firmware-config/tweaks/filament-detect/success_exporter.cfg /oem/printer_data/config/extended/filament-detect/success_exporter.cfg
-                /etc/init.d/S59filament-detect restart
+                /etc/init.d/S99filament-detect restart
         default: "false"
