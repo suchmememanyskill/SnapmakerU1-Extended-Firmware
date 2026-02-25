@@ -1,0 +1,62 @@
+settings:
+  filament_detection:
+    label: Filament Detection
+    items:
+      system:
+        label: Filament Tag Detection System
+        description: Extended system adds support for Bambu/Creality/Anycubic/Elegoo tagged spools.
+        get_cmd:
+          - bash
+          - -c
+          - test -f /oem/printer_data/config/extended/filament-detect/base.cfg && echo external || echo official
+        options:
+          official:
+            label: Snapmaker
+            cmd:
+              - bash
+              - -xc
+              - |
+                rm -vf /oem/printer_data/config/extended/klipper/disable-rfid-reader.cfg
+                rm -vf /oem/printer_data/config/extended/filament-detect/base.cfg
+                /etc/init.d/S99filament-detect stop
+                /etc/init.d/S60klipper restart
+          external:
+            label: External/Sims
+            cmd:
+              - bash
+              - -xc
+              - |
+                /usr/local/bin/extended-config.py add /home/lava/printer_data/config/extended/extended2.cfg filament_detection system extended
+                ln -sf /usr/local/share/firmware-config/tweaks/klipper/disable-rfid-reader.cfg /oem/printer_data/config/extended/klipper/disable-rfid-reader.cfg
+                ln -sf /usr/local/share/firmware-config/tweaks/filament-detect/base.cfg /oem/printer_data/config/extended/filament-detect/base.cfg
+                /etc/init.d/S99filament-detect start
+                /etc/init.d/S60klipper restart
+                echo Please read the relevant documentation for this feature. Bambu Lab and Creality spools are not enabled by default.
+        default: official
+      generic:
+        label: Label All Filament as Generic
+        description: Snapmaker Orca hides all filament no matching profile could be found for. As the Generic profile is always present, this will garuantee it shows up.
+        get_cmd:
+          - bash
+          - -c
+          - test -f /oem/printer_data/config/extended/filament-detect/success_exporter_generic.cfg && echo true || echo false
+        options:
+          "true":
+            label: Enabled
+            cmd:
+              - bash
+              - -xc
+              - |
+                rm -vf /oem/printer_data/config/extended/filament-detect/success_exporter.cfg
+                ln -sf /usr/local/share/firmware-config/tweaks/filament-detect/success_exporter_generic.cfg /oem/printer_data/config/extended/filament-detect/success_exporter_generic.cfg
+                /etc/init.d/S59filament-detect restart
+          "false":
+            label: Disabled
+            cmd:
+              - bash
+              - -xc
+              - |
+                rm -vf /oem/printer_data/config/extended/filament-detect/success_exporter_generic.cfg
+                ln -sf /usr/local/share/firmware-config/tweaks/filament-detect/success_exporter.cfg /oem/printer_data/config/extended/filament-detect/success_exporter.cfg
+                /etc/init.d/S59filament-detect restart
+        default: "false"

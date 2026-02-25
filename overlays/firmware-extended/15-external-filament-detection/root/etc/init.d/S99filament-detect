@@ -1,0 +1,71 @@
+#!/bin/sh
+
+PIDFILE="/var/run/filament-detect.pid"
+
+ENABLED_PATH_EXISTS="/oem/printer_data/config/extended/filament-detect/base.cfg"
+SNAPMAKER_KEY=$(grep 'FM175XX_M1_CARD_HKDF_SALT_KEY_B.*= b"' /home/lava/klipper/klippy/extras/fm175xx_reader.py | sed 's/.*b"\(.*\)".*/\1/' | tr -d '\n' | xxd -p | tr -d '\n')
+
+start() {
+    if [ ! -e $ENABLED_PATH_EXISTS ]; then
+        echo "Filament tag detection system is not set to 'external', not starting."
+        return
+    fi
+
+    if [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
+        echo "filament-detect already running"
+        return 0
+    fi
+
+    # Ensure a success_exporter config exists (default to non-generic)
+    if [ ! -e /oem/printer_data/config/extended/filament-detect/success_exporter.cfg ] && \
+       [ ! -e /oem/printer_data/config/extended/filament-detect/success_exporter_generic.cfg ]; then
+        ln -sf /usr/local/share/firmware-config/tweaks/filament-detect/success_exporter.cfg \
+            /oem/printer_data/config/extended/filament-detect/success_exporter.cfg
+    fi
+
+    cat /oem/printer_data/config/extended/filament-detect/*.cfg > /tmp/u1.cfg
+
+    echo "[snapmaker_tag_processor]" >> /tmp/u1.cfg
+    echo "key = $SNAPMAKER_KEY" >> /tmp/u1.cfg
+
+    printf "Starting filament-detect: "
+    start-stop-daemon -S -b -m \
+        -p "$PIDFILE" \
+        -x /usr/bin/python3 -- /usr/local/bin/filament-detect/main.py /tmp/u1.cfg
+        
+    echo "OK"
+}
+
+stop() {
+    printf "Stopping filament-detect: "
+    if [ -f "$PIDFILE" ]; then
+        start-stop-daemon -K -p "$PIDFILE" -s TERM
+        rm -f "$PIDFILE" 
+        echo "OK"
+    else
+        echo "not running"
+    fi
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+
+    stop)
+        stop
+        ;;
+
+    restart|reload)
+        stop
+        sleep 1
+        start
+        ;;
+
+    *)
+        echo "Usage: $0 {start|stop|restart}"
+        exit 1
+        ;;
+esac
+
+exit $?

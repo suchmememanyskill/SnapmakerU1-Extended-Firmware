@@ -1,0 +1,11 @@
+# Example file on how to configure the Bambu/Creality tag processors.
+
+#[bambu_lab_tag_processor]
+# Bambu Lab tagged filament detection key (32 hex characters)
+#key =
+
+#[creality_tag_processor]
+# Creality tagged filament detection key (32 hex characters)
+#key =
+# Creality tagged filament detection encryption key (32 hex characters)
+#encryption_key =
