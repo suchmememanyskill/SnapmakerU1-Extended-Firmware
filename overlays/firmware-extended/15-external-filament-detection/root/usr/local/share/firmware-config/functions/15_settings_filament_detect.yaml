@@ -3,13 +3,23 @@ settings:
     label: Filament Detection
     items:
       system:
-        label: Filament Tag Detection System
-        description: Extended system adds support for extra tag types, like Bambu/Creality/Anycubic/Elegoo tagged spools.
+        label: Filament Tag Detection System for Internal Readers
+        description: External system adds support for extra tag types, like Bambu/Creality/Anycubic/Elegoo tagged spools.
         get_cmd:
           - bash
           - -c
-          - test -f /oem/printer_data/config/extended/filament-detect/base.cfg && echo external || echo official
+          - if test -f /oem/printer_data/config/extended/filament-detect/base.cfg; then echo external; elif test -f /oem/printer_data/config/extended/klipper/disable-rfid-reader.cfg; then echo none; else echo official; fi
         options:
+          none:
+            label: None
+            cmd:
+              - bash
+              - -xc
+              - |
+                ln -sf /usr/local/share/firmware-config/tweaks/klipper/disable-rfid-reader.cfg /oem/printer_data/config/extended/klipper/disable-rfid-reader.cfg
+                rm -vf /oem/printer_data/config/extended/filament-detect/base.cfg
+                /etc/init.d/S99filament-detect stop
+                /etc/init.d/S60klipper restart         
           official:
             label: Snapmaker
             cmd:
@@ -26,7 +36,6 @@ settings:
               - bash
               - -xc
               - |
-                /usr/local/bin/extended-config.py add /home/lava/printer_data/config/extended/extended2.cfg filament_detection system extended
                 ln -sf /usr/local/share/firmware-config/tweaks/klipper/disable-rfid-reader.cfg /oem/printer_data/config/extended/klipper/disable-rfid-reader.cfg
                 ln -sf /usr/local/share/firmware-config/tweaks/filament-detect/base.cfg /oem/printer_data/config/extended/filament-detect/base.cfg
                 /etc/init.d/S99filament-detect start
@@ -35,7 +44,7 @@ settings:
         default: official
       generic:
         label: Label All Filament as Generic
-        description: Snapmaker Orca hides all filament no matching profile could be found for. As the Generic profile is always present, this will garuantee it shows up.
+        description: Snapmaker Orca hides all filament no matching profile could be found for. As the Generic profile is always present, this will garuantee it shows up. Only works when detection system is set to 'External/Sims'
         get_cmd:
           - bash
           - -c
