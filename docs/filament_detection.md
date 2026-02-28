@@ -10,12 +10,19 @@ The extended firmware supports an alternative filament detection system that rec
 
 ## Detection Systems
 
+- **None** - Disable internal detection system for tagged filament. This is useful if you want to use external readers.
 - **Snapmaker** - Snapmaker's official filament detection system (default)
-- **External/Sims** - Custom filament detection system using the [filament-detect](https://github.com/suchmememanyskill/filament-detect) project, with support for multiple spool tagging formats
+- **Alternate/Sims** - Custom filament detection system using the [filament-detect](https://github.com/suchmememanyskill/filament-detect) project, with support for multiple spool tagging formats
 
-## Supported Spool Tagging Systems
+## Configuration
 
-The external detection system supports the following spool tagging systems:
+Navigate to the [firmware-config](firmware_config.md) web interface, go to the Filament Detection section, and select a different filament detection system.
+
+If you use Snapmaker Orca, unless you specifically set up all filament brands, they will not show up in the filament dropdown. To label all filament as 'Generic', set "Label All Filament as Generic" to **Enabled** as well.
+
+## Supported Spool Tagging Systems in Alternate/Sims
+
+The Sims detection system supports the following spool tagging systems:
 
 | System | Enabled by default | Remarks |
 |--------|-------------------|--------------------------|
@@ -23,16 +30,12 @@ The external detection system supports the following spool tagging systems:
 | Creality | No | Requires additional configuration (see below) |
 | Anycubic | Yes | - |
 | Snapmaker | Yes | - |
+| Elegoo | Yes | Elegoo spools tagged with RFID work unreliably |
 | [OpenSpool](https://openspool.io/) | Yes | - |
 | TigerTag | Yes | Fully offline implementation |
 
-## Configuration
 
-Navigate to the [firmware-config](firmware_config.md) web interface, go to the Filament Detection section, and select the **External/Sims** detection system.
-
-If you use Snapmaker Orca, unless you specifically set up all filament brands, they will not show up in the filament dropdown. To label all filament as 'Generic', set "Label All Filament as Generic" to **Enabled** as well.
-
-## Bambu / Creality Spool Configuration
+### Bambu / Creality Spool Configuration
 
 Bambu and Creality tagged spools require additional authentication keys to read. To configure them:
 

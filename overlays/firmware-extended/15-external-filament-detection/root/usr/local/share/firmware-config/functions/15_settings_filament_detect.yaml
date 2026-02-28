@@ -4,11 +4,11 @@ settings:
     items:
       system:
         label: Filament Tag Detection System for Internal Readers
-        description: External system adds support for extra tag types, like Bambu/Creality/Anycubic/Elegoo tagged spools.
+        description: Alternate systems adds support for extra tag types, like Bambu/Creality/Anycubic/Elegoo tagged spools. None disables the built-in readers.
         get_cmd:
           - bash
           - -c
-          - if test -f /oem/printer_data/config/extended/filament-detect/base.cfg; then echo external; elif test -f /oem/printer_data/config/extended/klipper/disable-rfid-reader.cfg; then echo none; else echo official; fi
+          - if test -f /oem/printer_data/config/extended/filament-detect/base.cfg; then echo alternate; elif test -f /oem/printer_data/config/extended/klipper/disable-rfid-reader.cfg; then echo none; else echo official; fi
         options:
           none:
             label: None
@@ -30,8 +30,8 @@ settings:
                 rm -vf /oem/printer_data/config/extended/filament-detect/base.cfg
                 /etc/init.d/S99filament-detect stop
                 /etc/init.d/S60klipper restart
-          external:
-            label: External/Sims
+          alternate:
+            label: Alternate/Sims
             cmd:
               - bash
               - -xc
@@ -44,7 +44,7 @@ settings:
         default: official
       generic:
         label: Label All Filament as Generic
-        description: Snapmaker Orca hides all filament no matching profile could be found for. As the Generic profile is always present, this will garuantee it shows up. Only works when detection system is set to 'External/Sims'
+        description: Snapmaker Orca hides all filament no matching profile could be found for. As the Generic profile is always present, this will garuantee it shows up. Only works when detection system is set to 'Alternate/Sims'
         get_cmd:
           - bash
           - -c
