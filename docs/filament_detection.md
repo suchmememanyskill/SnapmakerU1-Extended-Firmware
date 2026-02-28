@@ -20,9 +20,13 @@ Navigate to the [firmware-config](firmware_config.md) web interface, go to the F
 
 If you use Snapmaker Orca, unless you specifically set up all filament brands, they will not show up in the filament dropdown. To label all filament as 'Generic', set "Label All Filament as Generic" to **Enabled** as well.
 
-## Supported Spool Tagging Systems in Alternate/Sims
+## External Filament Detection Systems
 
-The Sims detection system supports the following spool tagging systems:
+- [wasikuss/snapmaker-u1-remote-rfid-reader](https://github.com/wasikuss/snapmaker-u1-remote-rfid-reader) - An ESP32 based handheld RFID reader
+
+## Supported Tags in Alternate/Sims
+
+The Sims detection system supports the following tags:
 
 | System | Enabled by default | Remarks |
 |--------|-------------------|--------------------------|
