@@ -44,7 +44,7 @@ settings:
         default: official
       generic:
         label: Label All Filament as Generic
-        description: Snapmaker Orca hides all filament no matching profile could be found for. As the Generic profile is always present, this will garuantee it shows up. Only works when detection system is set to 'Alternate/Sims'
+        description: Snapmaker Orca hides all filament that no matching profile could be found for. Because the Generic profile is always present, this will guarantee it shows up. Only works when detection system is set to 'Alternate/Sims'
         get_cmd:
           - bash
           - -c
