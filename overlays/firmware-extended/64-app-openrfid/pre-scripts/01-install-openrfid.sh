@@ -4,7 +4,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2026 @paxx12
 
 GIT_URL=https://github.com/suchmememanyskill/OpenRFID.git
-GIT_SHA=07fc06bc4eec1445d21aef8f32776b1657d4ac55
+GIT_SHA=a13bc9e181374e182f61db4e69abf9fa1786cc29
 
 if [[ -z "$CREATE_FIRMWARE" ]]; then
   echo "Error: This script should be run within the create_firmware.sh environment."
